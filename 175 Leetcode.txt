@@ -1,0 +1,41 @@
+🧩 175 – Combine Two Tables
+
+📄 Problem:
+You are given two tables:
+
+Person(personId, lastName, firstName)
+
+Address(addressId, personId, city, state)
+
+Return each person's firstName, lastName, city, and state.
+If a person has no address, return NULL for city and state.
+
+✅ Approach:
+Use a LEFT JOIN to get all persons, even if they don’t have an address.
+
+💻 SQL Query:
+
+SELECT 
+    p.firstName, 
+    p.lastName, 
+    a.city, 
+    a.state
+FROM 
+    Person p
+LEFT JOIN 
+    Address a 
+ON 
+    p.personId = a.personId;
+
+
+🧠 Why LEFT JOIN?
+Returns all people from Person
+
+If no match in Address, shows NULL for city and state
+
+
+| firstName | lastName | city          | state    |
+| --------- | -------- | ------------- | -------- |
+| Allen     | Wang     | NULL          | NULL     |
+| Bob       | Alice    | New York City | New York |
+
