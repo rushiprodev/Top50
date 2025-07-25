@@ -1,0 +1,82 @@
+## 584. Find Customer Referee
+
+**Difficulty:** Easy  
+**Topic:** SQL  
+**Database:** MySQL / PostgreSQL compatible  
+
+---
+
+### 🧩 Problem Description
+
+Given a table `Customer` with the following schema:
+
+| Column Name | Type    | Description                            |
+|-------------|---------|----------------------------------------|
+| id          | int     | Primary key of the customer            |
+| name        | varchar | Name of the customer                   |
+| referee_id  | int     | ID of the customer who referred them (nullable) |
+
+You are asked to find the **names of customers** who are:
+- either **not referred by anyone** (`referee_id IS NULL`)
+- or **referred by a customer whose `id` is not 2**
+
+---
+
+### 🔍 Example
+
+#### Input
+
+**Customer table:**
+
+| id | name | referee_id |
+|----|------|------------|
+| 1  | Will | null       |
+| 2  | Jane | null       |
+| 3  | Alex | 2          |
+| 4  | Bill | null       |
+| 5  | Zack | 1          |
+| 6  | Mark | 2          |
+
+#### Output
+
+| name  |
+|--------|
+| Will  |
+| Jane  |
+| Bill  |
+| Zack  |
+
+---
+
+### 💡 Approach
+
+To solve this, we use a `WHERE` clause with an `OR` condition:
+
+1. `referee_id IS NULL` → selects customers with no referrer.
+2. `referee_id != 2` → selects customers referred by someone other than customer `id = 2`.
+
+---
+
+### ✅ SQL Query
+
+```sql
+SELECT name
+FROM Customer
+WHERE referee_id != 2 OR referee_id IS NULL;
+
+
+## ❓ Why Use `IS NULL` Instead of `= NULL`
+
+In SQL, `NULL` means **"unknown" or "missing value"**, not an actual value.
+
+- `= NULL` → ❌ Incorrect (always returns false or unknown)
+- `IS NULL` → ✅ Correct way to check for missing values
+
+### ✅ Example
+
+```sql
+-- Correct
+WHERE referee_id IS NULL;
+
+-- Wrong
+WHERE referee_id = NULL;  -- ❌ Doesn't work as expected
