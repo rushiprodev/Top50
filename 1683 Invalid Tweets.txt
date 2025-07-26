@@ -1,0 +1,61 @@
+# 🧠 LeetCode SQL - Invalid Tweets
+
+## 📄 Problem Description
+
+You are given a table `Tweets` that contains social media posts.
+
+### Table: `Tweets`
+
+| Column Name | Type    |
+|-------------|---------|
+| tweet_id    | int     |
+| content     | varchar |
+
+- `tweet_id` is the **primary key**.
+- `content` contains **alphanumeric characters**, `'!'`, and `' '` (spaces).
+- No other special characters are allowed.
+
+---
+
+## ❓ Goal
+
+Find the IDs of **invalid tweets**.
+
+### 📌 A tweet is considered **invalid** if:
+- The number of characters in `content` is **strictly greater than 15**.
+
+Return the result table with:
+
+- `tweet_id`: ID of the invalid tweet
+
+Order of rows **does not matter**.
+
+---
+
+## 🧪 Example
+
+### Input: `Tweets` Table
+
+| tweet_id | content                           |
+|----------|------------------------------------|
+| 1        | Let us Code                        |
+| 2        | More than fifteen chars are here!  |
+
+### Output:
+
+| tweet_id |
+|----------|
+| 2        |
+
+### Explanation:
+- Tweet 1 → `"Let us Code"` → 11 characters → ✅ valid
+- Tweet 2 → `"More than fifteen chars are here!"` → more than 15 characters → ❌ invalid
+
+---
+
+## ✅ MySQL Solution
+
+```sql
+SELECT tweet_id
+FROM Tweets
+WHERE LENGTH(content) > 15;
