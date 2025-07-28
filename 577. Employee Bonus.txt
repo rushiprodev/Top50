@@ -1,0 +1,82 @@
+# Employee Bonus Filter - SQL Query
+
+## 📝 Problem Statement
+
+We are given two tables:
+
+### `Employee` Table
+
+| Column Name | Type    | Description                         |
+|-------------|---------|-------------------------------------|
+| empId       | int     | Unique employee ID                  |
+| name        | varchar | Name of the employee                |
+| supervisor  | int     | ID of the supervisor (may be NULL)  |
+| salary      | int     | Employee salary                     |
+
+### `Bonus` Table
+
+| Column Name | Type | Description                   |
+|-------------|------|-------------------------------|
+| empId       | int  | Employee ID (foreign key)     |
+| bonus       | int  | Bonus amount for the employee |
+
+Each row in the `Bonus` table represents the bonus of an employee. An employee **might not have** a bonus entry.
+
+---
+
+## 🎯 Objective
+
+Write a SQL query to display the `name` and `bonus` of employees:
+
+- Who have a **bonus less than 1000**, or  
+- **Don't have any bonus** (i.e., NULL).
+
+Return the result in any order.
+
+---
+
+## 💡 Sample Data
+
+### Employee Table
+
+| empId | name   | supervisor | salary |
+|-------|--------|------------|--------|
+| 3     | Brad   | NULL       | 4000   |
+| 1     | John   | 3          | 1000   |
+| 2     | Dan    | 3          | 2000   |
+| 4     | Thomas | 3          | 4000   |
+
+### Bonus Table
+
+| empId | bonus |
+|-------|-------|
+| 2     | 500   |
+| 4     | 2000  |
+
+---
+
+## ✅ Expected Output
+
+| name  | bonus |
+|-------|-------|
+| Brad  | NULL  |
+| John  | NULL  |
+| Dan   | 500   |
+
+---
+
+## ✅ SQL Solution
+
+```sql
+SELECT 
+    e.name, 
+    b.bonus
+FROM 
+    Employee e
+LEFT JOIN 
+    Bonus b 
+ON 
+    e.empId = b.empId
+WHERE 
+    b.bonus < 1000 
+    OR b.bonus IS NULL;

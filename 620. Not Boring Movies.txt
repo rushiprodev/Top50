@@ -1,0 +1,69 @@
+# 🎬 Filter Movies - SQL Query
+
+## 📝 Problem Statement
+
+Given a table `Cinema` with movie information, write a SQL query to:
+
+- Select only the movies with an **odd-numbered ID**
+- The `description` **must not be** `'boring'`
+- Order the results by **rating in descending order**
+
+---
+
+## 📊 Table: `Cinema`
+
+| Column Name | Type    | Description                             |
+|-------------|---------|-----------------------------------------|
+| id          | int     | Primary key, unique movie ID            |
+| movie       | varchar | Name of the movie                       |
+| description | varchar | Description/genre of the movie          |
+| rating      | float   | Movie rating (2 decimal places, 0–10)   |
+
+---
+
+## 🎯 Objective
+
+Return all columns of the movies that:
+
+- Have an **odd ID** (`id % 2 = 1`)
+- Have a `description` **not equal to 'boring'**
+- Are **sorted by rating** (highest first)
+
+---
+
+## 💡 Sample Input
+
+### `Cinema` Table
+
+| id | movie      | description | rating |
+|----|------------|-------------|--------|
+| 1  | War        | great 3D    | 8.9    |
+| 2  | Science    | fiction     | 8.5    |
+| 3  | irish      | boring      | 6.2    |
+| 4  | Ice song   | Fantacy     | 8.6    |
+| 5  | House card | Interesting | 9.1    |
+
+---
+
+## ✅ Expected Output
+
+| id | movie      | description | rating |
+|----|------------|-------------|--------|
+| 5  | House card | Interesting | 9.1    |
+| 1  | War        | great 3D    | 8.9    |
+
+---
+
+## ✅ SQL Solution
+
+```sql
+SELECT  * FROM Cinema
+WHERE 
+  MOD(id, 2) = 1            -- Only odd-numbered IDs
+ AND description != 'boring'   -- Exclude boring movies
+ORDER BY rating DESC;              -- Sort by highest r
+
+
+## ✅ SQL Solution
+
+select e.name,B.bonus from Employee e left join Bonus B on e.empId=B.empId where bonus<1000 or bonus is null;
