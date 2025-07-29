@@ -1,0 +1,102 @@
+# 📊 LeetCode SQL - 1251. Average Selling Price
+
+## 🧾 Problem Statement
+
+Write a SQL query to find the **average selling price** for each product.  
+The `average_price` should be **rounded to 2 decimal places**.
+
+- If a product does **not have any sold units**, its average selling price is assumed to be **0**.
+- Return the result table in any order.
+
+---
+
+## 🗃️ Table Definitions
+
+### `Prices` Table
+
+| Column Name | Type |
+|-------------|------|
+| product_id  | int  |
+| start_date  | date |
+| end_date    | date |
+| price       | int  |
+
+- **Primary Key**: (product_id, start_date, end_date)
+- Each row shows the **price** of a product during a date **range** (from `start_date` to `end_date`).
+- No overlapping periods for the same product.
+
+---
+
+### `UnitsSold` Table
+
+| Column Name   | Type |
+|---------------|------|
+| product_id    | int  |
+| purchase_date | date |
+| units         | int  |
+
+- May contain **duplicate rows**.
+- Each row indicates the **number of units sold** for a product on a specific date.
+
+---
+
+## 📥 Example Input
+
+### `Prices` Table
+
+| product_id | start_date | end_date   | price |
+|------------|------------|------------|-------|
+| 1          | 2019-02-17 | 2019-02-28 | 5     |
+| 1          | 2019-03-01 | 2019-03-22 | 20    |
+| 2          | 2019-02-01 | 2019-02-20 | 15    |
+| 2          | 2019-02-21 | 2019-03-31 | 30    |
+
+### `UnitsSold` Table
+
+| product_id | purchase_date | units |
+|------------|----------------|-------|
+| 1          | 2019-02-25     | 100   |
+| 1          | 2019-03-01     | 15    |
+| 2          | 2019-02-10     | 200   |
+| 2          | 2019-03-22     | 30    |
+
+---
+
+## 📤 Example Output
+
+| product_id | average_price |
+|------------|----------------|
+| 1          | 6.96           |
+| 2          | 16.96          |
+
+### 📘 Explanation
+
+- **Product 1:**
+  - 100 units sold at ₹5 on 2019-02-25 → 100 × 5 = ₹500
+  - 15 units sold at ₹20 on 2019-03-01 → 15 × 20 = ₹300
+  - Total = ₹800, Units = 115 → ₹800 / 115 = **6.96**
+
+- **Product 2:**
+  - 200 units sold at ₹15 → ₹3000
+  - 30 units sold at ₹30 → ₹900
+  - Total = ₹3900, Units = 230 → ₹3900 / 230 = **16.96**
+
+---
+
+## ✅ SQL Solution
+
+```sql
+SELECT 
+    u.product_id,
+    ROUND(
+        IFNULL(SUM(u.units * p.price) / SUM(u.units), 0), 2
+    ) AS average_price
+FROM 
+    UnitsSold u
+JOIN 
+    Prices p
+ON 
+    u.product_id = p.product_id
+    AND u.purchase_date BETWEEN p.start_date AND p.end_date
+GROUP BY 
+    u.product_id;
