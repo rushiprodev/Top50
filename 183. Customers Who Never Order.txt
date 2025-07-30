@@ -1,0 +1,76 @@
+# 183. Customers Who Never Order
+
+## 📘 Problem Statement
+
+Write a SQL query to find all customers who **never placed an order**.
+
+---
+
+## 📋 Table Schemas
+
+### Customers
+
+| Column Name | Type    |
+|-------------|---------|
+| id          | int     |
+| name        | varchar |
+
+- `id` is the primary key.
+
+### Orders
+
+| Column Name | Type |
+|-------------|------|
+| id          | int  |
+| customerId  | int  |
+
+- `id` is the primary key.
+- `customerId` is a foreign key referencing `Customers(id)`.
+
+---
+
+## 🎯 Example
+
+### Input
+
+**Customers table:**
+
+| id | name  |
+|----|-------|
+| 1  | Joe   |
+| 2  | Henry |
+| 3  | Sam   |
+| 4  | Max   |
+
+**Orders table:**
+
+| id | customerId |
+|----|------------|
+| 1  | 3          |
+| 2  | 1          |
+
+### Output
+
+| Customers |
+|-----------|
+| Henry     |
+| Max       |
+
+---
+
+## ✅ Approach
+
+- Use a **LEFT JOIN** to join `Customers` with `Orders` on the `id` and `customerId`.
+- Customers who **never placed an order** will have `NULL` in the `Orders.customerId` column.
+- Filter these using `WHERE o.customerId IS NULL`.
+
+---
+
+## 💡 SQL Solution
+
+```sql
+SELECT c.name AS Customers
+FROM Customers c
+LEFT JOIN Orders o
+ON c.id = o.customerId
+WHERE o.customerId IS NULL;

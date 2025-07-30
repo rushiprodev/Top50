@@ -1,0 +1,62 @@
+# LeetCode 181. Employees Earning More Than Their Managers
+
+## 🧩 Problem Description
+
+Table: **Employee**
+
+| Column Name | Type    |
+|-------------|---------|
+| id          | int     |
+| name        | varchar |
+| salary      | int     |
+| managerId   | int     |
+
+- `id` is the **primary key** for this table.
+- Each row in the table represents one employee's ID, name, salary, and their manager's ID (`managerId`).
+- `managerId` is a reference to the `id` of another employee.
+- A `managerId` can be `NULL` if the employee has no manager.
+
+---
+
+## 🎯 Task
+
+Write a SQL query to find the names of employees who **earn more than their managers**.
+
+Return the result table in any order.
+
+---
+
+## 🧪 Example
+
+### Input:
+
+**Employee table:**
+
+| id | name  | salary | managerId |
+|----|-------|--------|-----------|
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | NULL      |
+| 4  | Max   | 90000  | NULL      |
+
+### Output:
+
+| Employee |
+|----------|
+| Joe      |
+
+### Explanation:
+
+- Joe earns `70000`, and his manager (Sam) earns `60000` → ✅ Joe is included.
+- Henry earns `80000`, and his manager (Max) earns `90000` → ❌ Not included.
+- Sam and Max have no managers (`NULL`) → skipped.
+
+---
+
+## 💡 SQL Solution
+
+```sql
+SELECT e.name AS Employee
+FROM Employee e
+JOIN Employee m ON e.managerId = m.id
+WHERE e.salary > m.salary;

@@ -1,0 +1,108 @@
+# 📊 Contest Registration Percentage – SQL Solution
+
+## 📝 Problem Statement
+
+You are given two tables:
+
+### 1. `Users`
+
+| Column Name | Type    |
+|-------------|---------|
+| user_id     | int     |
+| user_name   | varchar |
+
+- `user_id` is the **primary key**.
+- Each row contains a user's ID and their name.
+
+### 2. `Register`
+
+| Column Name | Type |
+|-------------|------|
+| contest_id  | int  |
+| user_id     | int  |
+
+- `(contest_id, user_id)` is the **primary key**.
+- Each row records that a user has registered for a specific contest.
+
+---
+
+## 🎯 Objective
+
+Calculate the **percentage of users registered** in each contest, rounded to **two decimal places**.
+
+### Output Requirements:
+
+- Columns: `contest_id`, `percentage`
+- Order the output:
+  - By `percentage` in **descending** order.
+  - If there is a tie, by `contest_id` in **ascending** order.
+
+---
+
+## 📈 Example
+
+### Input
+
+**Users Table**
+
+| user_id | user_name |
+|---------|-----------|
+| 6       | Alice     |
+| 2       | Bob       |
+| 7       | Alex      |
+
+**Register Table**
+
+| contest_id | user_id |
+|------------|---------|
+| 215        | 6       |
+| 209        | 2       |
+| 208        | 2       |
+| 210        | 6       |
+| 208        | 6       |
+| 209        | 7       |
+| 209        | 6       |
+| 215        | 7       |
+| 208        | 7       |
+| 210        | 2       |
+| 207        | 2       |
+| 210        | 7       |
+
+### Output
+
+| contest_id | percentage |
+|------------|------------|
+| 208        | 100.0      |
+| 209        | 100.0      |
+| 210        | 100.0      |
+| 215        | 66.67      |
+| 207        | 33.33      |
+
+---
+
+## 🧠 Approach
+
+1. Count the number of users registered for each contest using `COUNT(DISTINCT user_id)`.
+2. Get the total number of users from the `Users` table.
+3. Calculate the percentage:  
+   \[
+   \text{percentage} = \left(\frac{\text{registered users}}{\text{total users}}\right) \times 100
+   \]
+4. Use `ROUND(..., 2)` to keep two decimal places.
+5. Order the results as required.
+
+---
+
+## 💡 SQL Query
+
+```sql
+SELECT 
+    contest_id,
+    ROUND(COUNT(DISTINCT user_id) * 100.0 / (SELECT COUNT(*) FROM Users), 2) AS percentage
+FROM 
+    Register
+GROUP BY 
+    contest_id
+ORDER BY 
+    percentage DESC,
+    contest_id ASC;
