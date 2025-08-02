@@ -1,0 +1,74 @@
+# 📘 LeetCode SQL Problem 1729 - Find Followers Count
+
+## 📝 Problem Statement
+
+The `Followers` table contains the `user_id` and `follower_id` of users in a social media app. Each row indicates that the `follower_id` follows the `user_id`.
+
+Write an SQL query to **return the number of followers for each user**.
+
+Return the result table **ordered by `user_id` in ascending order**.
+
+---
+
+## 📊 Table: Followers
+
+| Column Name | Type |
+|-------------|------|
+| user_id     | int  |
+| follower_id | int  |
+
+- (user_id, follower_id) is the primary key.
+- Each row means `follower_id` follows `user_id`.
+
+---
+
+## 💡 Example
+
+**Input:**
+
+`Followers` table:
+
+| user_id | follower_id |
+|---------|-------------|
+| 0       | 1           |
+| 1       | 0           |
+| 2       | 0           |
+| 2       | 1           |
+
+**Output:**
+
+| user_id | followers_count |
+|---------|-----------------|
+| 0       | 1               |
+| 1       | 1               |
+| 2       | 2               |
+
+**Explanation:**
+- User 0 is followed by {1} → 1 follower
+- User 1 is followed by {0} → 1 follower
+- User 2 is followed by {0, 1} → 2 followers
+
+---
+
+## 🧠 Approach
+
+- Count how many times each `user_id` appears in the `Followers` table.
+- This gives the number of followers for each user.
+- Use `GROUP BY` to group by `user_id`.
+- Use `COUNT(*)` to get the number of rows (i.e., followers) per user.
+- Use `ORDER BY` to return the result in ascending order by `user_id`.
+
+---
+
+## ✅ SQL Solution
+
+```sql
+SELECT 
+    user_id, 
+    COUNT(*) AS followers_count
+FROM 
+    Followers
+GROUP BY 
+    user_id
+ORDER BY 
+    user_id;
