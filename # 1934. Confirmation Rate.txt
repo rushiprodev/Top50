@@ -1,0 +1,107 @@
+# 1934. Confirmation Rate
+
+## 🟠 Difficulty: Medium  
+**Tags:** SQL, JOIN, Aggregation, Group By
+
+---
+
+## 🧠 Problem Description
+
+We are given two tables: `Signups` and `Confirmations`.
+
+### 📘 Signups Table
+
+| Column Name | Type     |
+|-------------|----------|
+| user_id     | int      |
+| time_stamp  | datetime |
+
+- `user_id` is unique.
+- Each row represents the signup time of a user.
+
+---
+
+### 📘 Confirmations Table
+
+| Column Name | Type     |
+|-------------|----------|
+| user_id     | int      |
+| time_stamp  | datetime |
+| action      | ENUM('confirmed', 'timeout') |
+
+- `(user_id, time_stamp)` is the **primary key**.
+- `user_id` is a **foreign key** referencing `Signups(user_id)`.
+- Each row shows whether the user confirmed or timed out during a confirmation attempt.
+
+---
+
+## 🎯 Goal
+
+For each user, calculate their **confirmation rate**:
+
+- `confirmation_rate = confirmed_messages / total_confirmation_requests`
+- If a user **didn't request any confirmation**, their rate is **0.00**
+- Round the result to **2 decimal places**
+- Return the result in **any order**
+
+---
+
+## 📥 Example Input
+
+### Signups Table
+
+| user_id | time_stamp          |
+|---------|---------------------|
+| 3       | 2020-03-21 10:16:13 |
+| 7       | 2020-01-04 13:57:59 |
+| 2       | 2020-07-29 23:09:44 |
+| 6       | 2020-12-09 10:39:37 |
+
+### Confirmations Table
+
+| user_id | time_stamp          | action    |
+|---------|---------------------|-----------|
+| 3       | 2021-01-06 03:30:46 | timeout   |
+| 3       | 2021-07-14 14:00:00 | timeout   |
+| 7       | 2021-06-12 11:57:29 | confirmed |
+| 7       | 2021-06-13 12:58:28 | confirmed |
+| 7       | 2021-06-14 13:59:27 | confirmed |
+| 2       | 2021-01-22 00:00:00 | confirmed |
+| 2       | 2021-02-28 23:59:59 | timeout   |
+
+---
+
+## 📤 Example Output
+
+| user_id | confirmation_rate |
+|---------|-------------------|
+| 6       | 0.00              |
+| 3       | 0.00              |
+| 7       | 1.00              |
+| 2       | 0.50              |
+
+---
+
+## 🧮 Explanation
+
+- **User 6**: No confirmations → 0.00
+- **User 3**: 0 confirmed / 2 total → 0.00
+- **User 7**: 3 confirmed / 3 total → 1.00
+- **User 2**: 1 confirmed / 2 total → 0.50
+
+---
+
+## ✅ SQL Solution
+
+```sql
+SELECT 
+    S.user_id, 
+    ROUND(AVG(IF(C.action = 'confirmed', 1, 0)), 2) AS confirmation_rate
+FROM 
+    Signups S
+LEFT JOIN 
+    Confirmations C 
+ON 
+    S.user_id = C.user_id
+GROUP BY 
+    S.user_id;
