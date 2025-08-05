@@ -1,0 +1,81 @@
+# 📊 LeetCode SQL - Problem 1141
+
+## 🧩 Problem: User Activity for the Past 30 Days I
+
+### 🔗 Problem Link:
+[LeetCode 1141 - User Activity for the Past 30 Days I](https://leetcode.com/problems/user-activity-for-the-past-30-days-i/)
+
+---
+
+### 📘 Table: `Activity`
+
+| Column Name   | Type    |
+|---------------|---------|
+| user_id       | int     |
+| session_id    | int     |
+| activity_date | date    |
+| activity_type | enum    |
+
+- The `activity_type` is an ENUM with values:  
+  `('open_session', 'end_session', 'scroll_down', 'send_message')`
+- Each session belongs to **exactly one user**.
+- The table may contain **duplicate rows**.
+
+---
+
+### 🎯 Task:
+
+Write a solution to find the **daily active user count** for a **30-day window ending on 2019-07-27 (inclusive)**.  
+A user is considered active on a day **if they performed any activity** on that day.
+
+**Return only the days where there was at least one active user.**  
+The result can be returned in any order.
+
+---
+
+### 🧪 Example Input:
+
+Here is the sample data in the `Activity` table:
+
+| user_id | session_id | activity_date | activity_type  |
+|---------|------------|----------------|----------------|
+| 1       | 1          | 2019-07-20     | open_session   |
+| 1       | 1          | 2019-07-20     | scroll_down    |
+| 1       | 1          | 2019-07-20     | end_session    |
+| 2       | 4          | 2019-07-20     | open_session   |
+| 2       | 4          | 2019-07-21     | send_message   |
+| 2       | 4          | 2019-07-21     | end_session    |
+| 3       | 2          | 2019-07-21     | open_session   |
+| 3       | 2          | 2019-07-21     | send_message   |
+| 3       | 2          | 2019-07-21     | end_session    |
+| 4       | 3          | 2019-06-25     | open_session   |
+| 4       | 3          | 2019-06-25     | end_session    |
+
+---
+
+### 📤 Expected Output:
+
+| day        | active_users |
+|------------|---------------|
+| 2019-07-20 | 2             |
+| 2019-07-21 | 2             |
+
+📝 Notes:
+- Ignore `2019-06-25` because it's **outside the 30-day range**.
+- A user can perform multiple activities in a day, but is counted only **once per day**.
+
+---
+
+### ✅ SQL Solution:
+
+```sql
+SELECT 
+  activity_date AS day, 
+  COUNT(DISTINCT user_id) AS active_users
+FROM 
+  Activity
+WHERE 
+  DATEDIFF('2019-07-27', activity_date) >= 0
+  AND DATEDIFF('2019-07-27', activity_date) < 30
+GROUP BY 
+  activity_date;
