@@ -1,0 +1,89 @@
+# 176. Second Highest Salary
+
+**Difficulty:** Medium  
+**Tags:** SQL, Subquery, Ranking
+
+---
+
+## 🧾 Problem Description
+
+You're given a table called `Employee`:
+
+### Employee Table
+
+| Column Name | Type |
+|-------------|------|
+| id          | int  |
+| salary      | int  |
+
+- `id` is the **primary key** (unique for each employee).
+- Each row represents an employee’s **salary**.
+
+---
+
+### ❓ Goal
+
+Write a SQL query to find the **second highest distinct salary** in the `Employee` table.
+
+- If no such salary exists (i.e., only one or no salary), return `null`.
+
+---
+
+## 🧪 Example Inputs & Outputs
+
+### Example 1
+
+**Input:**
+
+**Employee Table:**
+
+| id | salary |
+|----|--------|
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
+
+**Output:**
+
+| SecondHighestSalary |
+|---------------------|
+| 200                 |
+
+---
+
+### Example 2
+
+**Input:**
+
+**Employee Table:**
+
+| id | salary |
+|----|--------|
+| 1  | 100    |
+
+**Output:**
+
+| SecondHighestSalary |
+|---------------------|
+| null                |
+
+---
+
+## ✅ SQL Solution
+
+```sql
+SELECT 
+    (
+        SELECT DISTINCT salary
+        FROM Employee
+        ORDER BY salary DESC
+        LIMIT 1 OFFSET 1
+    ) AS SecondHighestSalary;
+
+
+or one more query
+
+
+select max(distinct salary) as SecondHighestSalary from Employee 
+where salary not IN 
+(select max(salary) from Employee) 
