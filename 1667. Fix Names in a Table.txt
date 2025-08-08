@@ -1,0 +1,39 @@
+# 1667. Fix Names in a Table
+
+## 🧩 Problem Statement
+The `Users` table contains `user_id` and `name`. The `name` column may have incorrect capitalization (some letters are uppercase, some are lowercase).
+
+Your task is to **fix the names** so that:
+- Only the **first letter** is uppercase
+- The rest of the name is in **lowercase**
+
+Return the result **ordered by user_id**.
+
+---
+
+## 🧪 Example
+
+**Input Table:**
+
+| user_id | name  |
+|---------|-------|
+| 1       | aLice |
+| 2       | bOB   |
+
+**Output Table:**
+
+| user_id | name  |
+|---------|-------|
+| 1       | Alice |
+| 2       | Bob   |
+
+---
+
+## 💡 Solution
+
+```sql
+SELECT 
+  user_id,
+  CONCAT(UPPER(SUBSTRING(name, 1, 1)), LOWER(SUBSTRING(name, 2))) AS name
+FROM Users
+ORDER BY user_id;

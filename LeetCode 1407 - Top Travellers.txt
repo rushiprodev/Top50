@@ -1,0 +1,53 @@
+# LeetCode 1407 - Top Travellers
+
+## 🧠 Problem Statement
+
+You are given two tables: `Users` and `Rides`.
+
+- The `Users` table contains:
+  - `id`: unique identifier of each user
+  - `name`: name of the user
+
+- The `Rides` table contains:
+  - `id`: unique identifier of each ride
+  - `user_id`: the user who made the ride
+  - `distance`: distance travelled in that ride
+
+### 🧾 Goal:
+
+Report the **total distance travelled by each user**.  
+Include users even if they didn't take any rides (`distance = 0` for them).
+
+### 📊 Return Format:
+
+| name     | travelled_distance |
+|----------|--------------------|
+| Elvis    | 450                |
+| Lee      | 450                |
+| Bob      | 317                |
+| Jonathan | 312                |
+| Alex     | 222                |
+| Alice    | 120                |
+| Donald   | 0                  |
+
+### 📌 Order By:
+1. `travelled_distance` in **descending** order
+2. `name` in **ascending** order if distances are equal
+
+---
+
+## ✅ SQL Solution
+
+```sql
+SELECT 
+    u.name, 
+    IFNULL(SUM(r.distance), 0) AS travelled_distance
+FROM 
+    Users u
+LEFT JOIN 
+    Rides r ON u.id = r.user_id
+GROUP BY 
+    u.id, u.name
+ORDER BY 
+    travelled_distance DESC, 
+    u.name ASC;
