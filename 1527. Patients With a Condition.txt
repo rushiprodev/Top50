@@ -1,0 +1,79 @@
+
+# 1527. Patients With a Condition
+
+## Problem Statement
+Table: `Patients`
+
+| Column Name  | Type    |
+|--------------|---------|
+| patient_id   | int     |
+| patient_name | varchar |
+| conditions   | varchar |
+
+- `patient_id` is the **primary key**.
+- `conditions` contains `0` or more medical condition codes separated by spaces.
+- **Type I Diabetes** always starts with the prefix `DIAB1`.
+
+Write a query to find the `patient_id`, `patient_name`, and `conditions` of patients who **have Type I Diabetes**.
+
+Return the result table in **any order**.
+
+---
+
+## Example
+
+**Input:**
+```text
+Patients table:
++------------+--------------+--------------+
+| patient_id | patient_name | conditions   |
++------------+--------------+--------------+
+| 1          | Daniel       | YFEV COUGH   |
+| 2          | Alice        |              |
+| 3          | Bob          | DIAB100 MYOP |
+| 4          | George       | ACNE DIAB100 |
+| 5          | Alain        | DIAB201      |
++------------+--------------+--------------+
+
+Output:
++------------+--------------+--------------+
+| patient_id | patient_name | conditions   |
++------------+--------------+--------------+
+| 3          | Bob          | DIAB100 MYOP |
+| 4          | George       | ACNE DIAB100 |
++------------+--------------+--------------+
+Explanation:
+
+Bob → DIAB100 appears at the start of conditions. ✅
+
+George → DIAB100 appears after a space in conditions. ✅
+
+Alain → DIAB201 starts with DIAB2, not DIAB1. ❌
+
+Approach
+The conditions column contains space-separated condition codes.
+We must find rows where:
+
+The conditions string starts with DIAB1, OR
+
+The conditions string contains DIAB1 preceded by a space.
+
+Why not just LIKE '%DIAB1%'?
+%DIAB1% may incorrectly match parts of other words.
+Example: "ACNEDIAB12" would match even though it’s not a separate code.
+
+We want whole words starting with DIAB1.
+
+SQL Solution (Using LIKE)
+sql
+Copy
+Edit
+SELECT patient_id, patient_name, conditions
+FROM Patients
+WHERE conditions LIKE 'DIAB1%'
+   OR conditions LIKE '% DIAB1%';
+Explanation:
+
+DIAB1% → matches if conditions starts with DIAB1.
+
+% DIAB1% → matches if DIAB1 appears after a space.

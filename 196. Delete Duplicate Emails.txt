@@ -1,0 +1,52 @@
+# 196. Delete Duplicate Emails
+
+## 📄 Problem Statement
+The `Person` table contains email addresses, and some of them are duplicates.  
+We need to **delete all duplicate emails**, keeping only **one record** (the one with the smallest `id`) for each email.
+
+### Table: `Person`
+| Column Name | Type    |
+|-------------|---------|
+| id          | int     |
+| email       | varchar |
+
+- `id` is the **primary key**.
+- Emails will not contain uppercase letters.
+- The result order **does not matter**.
+- We must **write a `DELETE` statement**, not a `SELECT` query.
+
+---
+
+## 📌 Example
+
+### Input:
+| id  | email            |
+|-----|------------------|
+| 1   | john@example.com |
+| 2   | bob@example.com  |
+| 3   | john@example.com |
+
+### Output:
+| id  | email            |
+|-----|------------------|
+| 1   | john@example.com |
+| 2   | bob@example.com  |
+
+**Explanation:**  
+`john@example.com` appears twice. We keep the row with the **smallest id** (`id = 1`) and delete the others.
+
+---
+
+## 💡 Approach
+We compare each row (`p1`) with other rows (`p2`) having the **same email** and delete the row where `p1.id > p2.id`.  
+This ensures that only the row with the **smallest id** for each email remains.
+
+---
+
+## ✅ MySQL Solution
+```sql
+DELETE p1
+FROM Person p1
+JOIN Person p2
+  ON p1.email = p2.email
+WHERE p1.id > p2.id;
