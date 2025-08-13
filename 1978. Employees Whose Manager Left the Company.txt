@@ -1,0 +1,78 @@
+# 1978. Employees Whose Manager Left the Company
+
+## Problem Statement
+
+Table: `Employees`
+
+| Column Name | Type     |
+|-------------|----------|
+| employee_id | int      |
+| name        | varchar  |
+| manager_id  | int      |
+| salary      | int      |
+
+- `employee_id` is the **primary key** for this table.
+- This table contains information about the employees, their salary, and the ID of their manager.
+- Some employees do not have a manager (`manager_id` is NULL).
+- If a manager leaves the company, their record is deleted from the table, but their `manager_id` still remains for their reports.
+
+---
+
+### **Task**
+Find the **IDs** of the employees:
+1. Whose salary is **strictly less than $30000**, and
+2. Whose **manager has left the company** (manager's row no longer exists).
+
+Return the result table **ordered by employee_id**.
+
+---
+
+## Example 1
+
+**Input:**
+
+Employees table:
+| employee_id | name      | manager_id | salary |
+|-------------|-----------|------------|--------|
+| 3           | Mila      | 9          | 60301  |
+| 12          | Antonella | null       | 31000  |
+| 13          | Emery     | null       | 67084  |
+| 1           | Kalel     | 11         | 21241  |
+| 9           | Mikaela   | null       | 50937  |
+| 11          | Joziah    | 6          | 28485  |
+
+**Output:**
+| employee_id |
+|-------------|
+| 11          |
+
+**Explanation:**
+- Employees with salary `< 30000` → `1 (Kalel)` and `11 (Joziah)`.
+- Kalel’s manager is `11`, who still exists in the company → ❌ Not included.
+- Joziah’s manager is `6`, who does not exist in the table → ✅ Included.
+
+---
+
+## Approach
+
+We can solve this using a **LEFT JOIN** to check if the employee’s manager still exists in the company.
+
+1. Select employees where `salary < 30000`.
+2. Use `LEFT JOIN` from `Employees e` to `Employees m` on `e.manager_id = m.employee_id`.
+3. A missing manager means `m.employee_id IS NULL`.
+4. Ensure `manager_id IS NOT NULL` (to exclude employees who never had a manager).
+5. Sort results by `employee_id`.
+
+---
+
+## SQL Solution
+
+```sql
+SELECT e.employee_id
+FROM Employees e
+LEFT JOIN Employees m
+    ON e.manager_id = m.employee_id
+WHERE e.salary < 30000
+  AND m.employee_id IS NULL
+  AND e.manager_id IS NOT NULL
+ORDER BY e.employee_id;
