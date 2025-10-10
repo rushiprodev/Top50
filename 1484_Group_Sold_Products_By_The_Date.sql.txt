@@ -1,0 +1,116 @@
+/*
+------------------------------------------------------------
+📘 Problem: 1484. Group Sold Products By The Date
+Difficulty: Easy
+Platform: LeetCode SQL
+------------------------------------------------------------
+
+🧱 Table: Activities
++-------------+----------+
+| Column Name | Type     |
++-------------+----------+
+| sell_date   | date     |
+| product     | varchar  |
++-------------+----------+
+There is no primary key (column with unique values).
+This table may contain duplicate rows.
+
+Each row shows a product and the date it was sold.
+
+------------------------------------------------------------
+🎯 Goal:
+For each date, find:
+  • The number of **different products** sold (`num_sold`)
+  • The **names of those products**, joined together in a comma-separated string,
+    sorted in lexicographic (A–Z) order.
+
+Return the result ordered by `sell_date`.
+
+------------------------------------------------------------
+📊 Example Input:
+
+Activities table:
++------------+------------+
+| sell_date  | product    |
++------------+------------+
+| 2020-05-30 | Headphone  |
+| 2020-06-01 | Pencil     |
+| 2020-06-02 | Mask       |
+| 2020-05-30 | Basketball |
+| 2020-06-01 | Bible      |
+| 2020-06-02 | Mask       |
+| 2020-05-30 | T-shirt    |
++------------+------------+
+
+------------------------------------------------------------
+📤 Expected Output:
++------------+----------+------------------------------+
+| sell_date  | num_sold | products                     |
++------------+----------+------------------------------+
+| 2020-05-30 | 3        | Basketball,Headphone,T-shirt |
+| 2020-06-01 | 2        | Bible,Pencil                 |
+| 2020-06-02 | 1        | Mask                         |
++------------+----------+------------------------------+
+
+------------------------------------------------------------
+🧠 Explanation:
+
+For 2020-05-30 → Products sold: [Headphone, Basketball, T-shirt]
+Sorted → [Basketball, Headphone, T-shirt]
+num_sold = 3
+products = 'Basketball,Headphone,T-shirt'
+
+For 2020-06-01 → Products sold: [Pencil, Bible]
+Sorted → [Bible, Pencil]
+num_sold = 2
+products = 'Bible,Pencil'
+
+For 2020-06-02 → Products sold: [Mask]
+num_sold = 1
+products = 'Mask'
+
+------------------------------------------------------------
+🧩 SQL Logic (Step-by-Step):
+
+1️⃣ Use `GROUP BY sell_date` to process each date.
+2️⃣ Use `COUNT(DISTINCT product)` → to count unique products.
+3️⃣ Use `GROUP_CONCAT(DISTINCT product ORDER BY product)` → 
+    to combine product names into a single string, separated by commas.
+4️⃣ Order the results by `sell_date`.
+
+Note:
+- `GROUP_CONCAT()` is MySQL syntax.
+- In other SQL flavors, similar functions exist (like STRING_AGG in PostgreSQL).
+
+------------------------------------------------------------
+✅ Final SQL Solution:
+*/
+
+SELECT 
+    sell_date,
+    COUNT(DISTINCT product) AS num_sold,
+    GROUP_CONCAT(DISTINCT product ORDER BY product SEPARATOR ',') AS products
+FROM Activities
+GROUP BY sell_date
+ORDER BY sell_date;
+
+/*
+------------------------------------------------------------
+🧾 Output Explanation:
+Each row shows:
+- The date
+- Number of unique products sold that day
+- A comma-separated list of products sorted alphabetically
+
+Example:
+| sell_date  | num_sold | products                     |
+|-------------|----------|------------------------------|
+| 2020-05-30  | 3        | Basketball,Headphone,T-shirt |
+
+------------------------------------------------------------
+📂 File Info:
+Filename: 1484_Group_Sold_Products_By_The_Date.sql
+Author: Rushikesh Bhagwat
+GitHub Repo: Top50 SQL (LeetCode Solutions with Explanations)
+------------------------------------------------------------
+*/

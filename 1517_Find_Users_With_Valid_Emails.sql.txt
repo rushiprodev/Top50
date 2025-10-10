@@ -1,0 +1,123 @@
+/*
+------------------------------------------------------------
+📘 Problem: 1517. Find Users With Valid E-Mails
+Difficulty: Easy
+Platform: LeetCode SQL
+------------------------------------------------------------
+
+🧱 Table: Users
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| user_id       | int     |
+| name          | varchar |
+| mail          | varchar |
++---------------+---------+
+user_id is the primary key.
+
+This table contains information about users signed up on a website.
+Some e-mails are invalid.
+
+------------------------------------------------------------
+🎯 Goal:
+Find all users who have a **valid email address**.
+
+A valid email must follow these rules:
+1️⃣ The prefix (before '@') must:
+   - Start with a letter (A–Z or a–z)
+   - Contain only letters, digits, underscore '_', period '.', or dash '-'
+
+2️⃣ The domain must be exactly: `@leetcode.com`
+
+------------------------------------------------------------
+📊 Example Input:
+
+Users table:
++---------+-----------+-------------------------+
+| user_id | name      | mail                    |
++---------+-----------+-------------------------+
+| 1       | Winston   | winston@leetcode.com    |
+| 2       | Jonathan  | jonathanisgreat         |
+| 3       | Annabelle | bella-@leetcode.com     |
+| 4       | Sally     | sally.come@leetcode.com |
+| 5       | Marwan    | quarz#2020@leetcode.com |
+| 6       | David     | david69@gmail.com       |
+| 7       | Shapiro   | .shapo@leetcode.com     |
++---------+-----------+-------------------------+
+
+------------------------------------------------------------
+📤 Expected Output:
+
++---------+-----------+-------------------------+
+| user_id | name      | mail                    |
++---------+-----------+-------------------------+
+| 1       | Winston   | winston@leetcode.com    |
+| 3       | Annabelle | bella-@leetcode.com     |
+| 4       | Sally     | sally.come@leetcode.com |
++---------+-----------+-------------------------+
+
+------------------------------------------------------------
+🧠 Explanation:
+
+✅ Valid emails:
+- `winston@leetcode.com` → starts with letter, correct domain
+- `bella-@leetcode.com` → valid characters and domain
+- `sally.come@leetcode.com` → valid
+
+❌ Invalid emails:
+- `jonathanisgreat` → missing domain
+- `quarz#2020@leetcode.com` → contains `#` (invalid character)
+- `david69@gmail.com` → wrong domain
+- `.shapo@leetcode.com` → starts with a period (invalid)
+
+------------------------------------------------------------
+🧩 SQL Logic (Step-by-Step):
+
+1️⃣ Check the prefix using a Regular Expression (REGEXP)
+   - Must start with a letter → `^[A-Za-z]`
+   - Followed by letters, digits, underscore, period, or dash → `[A-Za-z0-9_.-]*`
+   - End with domain `@leetcode.com` → `@leetcode\.com$`
+
+✅ Combined Pattern:
+   `'^[A-Za-z][A-Za-z0-9_.-]*@leetcode\\.com$'`
+
+2️⃣ Use MySQL’s `REGEXP` operator to filter valid emails.
+
+------------------------------------------------------------
+✅ Final SQL Solution:
+*/
+
+SELECT 
+    user_id,
+    name,
+    mail
+FROM Users
+WHERE mail REGEXP '^[A-Za-z][A-Za-z0-9_.-]*@leetcode\\.com$';
+
+/*
+------------------------------------------------------------
+🧾 Output Explanation:
+Each row represents a user with a valid email address according
+to the given rules. We check the pattern using REGEXP.
+
+Example Output:
+| user_id | name      | mail                    |
+|----------|-----------|-------------------------|
+| 1        | Winston   | winston@leetcode.com    |
+| 3        | Annabelle | bella-@leetcode.com     |
+| 4        | Sally     | sally.come@leetcode.com |
+
+------------------------------------------------------------
+💡 MySQL REGEXP Details:
+- `^` : Start of string
+- `[A-Za-z]` : Must start with a letter
+- `[A-Za-z0-9_.-]*` : Allowed characters after first letter
+- `@leetcode\.com$` : Must end with "@leetcode.com"
+
+------------------------------------------------------------
+📂 File Info:
+Filename: 1517_Find_Users_With_Valid_Emails.sql
+Author: Rushikesh Bhagwat
+GitHub Repo: Top50 SQL (LeetCode Solutions with Explanations)
+------------------------------------------------------------
+*/
