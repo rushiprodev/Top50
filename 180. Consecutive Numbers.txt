@@ -1,0 +1,59 @@
+-- 180. Consecutive Numbers
+-- Table: Logs
+-- +-------------+---------+
+-- | Column Name | Type    |
+-- +-------------+---------+
+-- | id          | int     |
+-- | num         | varchar |
+-- +-------------+---------+
+-- id is the primary key for this table.
+
+-- Problem:
+-- Find all numbers that appear at least three times consecutively.
+
+-- Example:
+-- Input:
+-- +----+-----+
+-- | id | num |
+-- +----+-----+
+-- | 1  | 1   |
+-- | 2  | 1   |
+-- | 3  | 1   |
+-- | 4  | 2   |
+-- | 5  | 1   |
+-- | 6  | 2   |
+-- | 7  | 2   |
+-- +----+-----+
+--
+-- Output:
+-- +-----------------+
+-- | ConsecutiveNums |
+-- +-----------------+
+-- | 1               |
+-- +-----------------+
+
+
+-- ✅ Solution 1: Using Self Join
+SELECT DISTINCT l1.num AS ConsecutiveNums
+FROM Logs l1
+JOIN Logs l2 ON l1.id = l2.id - 1
+JOIN Logs l3 ON l2.id = l3.id - 1
+WHERE l1.num = l2.num
+  AND l2.num = l3.num;
+
+-- Explanation:
+-- 1️⃣ We join the Logs table to itself twice.
+-- 2️⃣ l1, l2, l3 represent three consecutive rows based on id.
+-- 3️⃣ If the num values are the same across these, it means num appears at least three times consecutively.
+-- 4️⃣ DISTINCT ensures each number is listed only once.
+
+-- ✅ Alternative (for MySQL 8.0+ using Window Functions)
+-- SELECT DISTINCT num AS ConsecutiveNums
+-- FROM (
+--   SELECT
+--     num,
+--     LAG(num, 1) OVER (ORDER BY id) AS prev1,
+--     LAG(num, 2) OVER (ORDER BY id) AS prev2
+--   FROM Logs
+-- ) t
+-- WHERE num = prev1 AND num = prev2;
