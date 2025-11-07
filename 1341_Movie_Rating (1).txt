@@ -1,0 +1,143 @@
+/*
+---------------------------------------------------------
+🏆 LeetCode 1341 — Movie Rating (Medium)
+---------------------------------------------------------
+
+🎯 Problem Statement:
+
+Write an SQL query to:
+
+1. Find the name of the user who has rated the greatest number of movies.  
+   - If there is a tie, return the lexicographically smaller name.
+
+2. Find the movie name with the highest average rating in February 2020.  
+   - If there is a tie, return the lexicographically smaller title.
+
+Return the results in a single column named `results`.
+
+---------------------------------------------------------
+📊 Table Schema
+---------------------------------------------------------
+
+Table: Movies
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| movie_id      | int     |
+| title         | varchar |
++---------------+---------+
+movie_id is the primary key.
+Each movie has a unique title.
+
+---------------------------------------------------------
+
+Table: Users
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| user_id       | int     |
+| name          | varchar |
++---------------+---------+
+user_id is the primary key.
+Each user has a unique name.
+
+---------------------------------------------------------
+
+Table: MovieRating
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| movie_id      | int     |
+| user_id       | int     |
+| rating        | int     |
+| created_at    | date    |
++---------------+---------+
+(movie_id, user_id) is the primary key.
+This table contains ratings for movies and their review dates.
+
+---------------------------------------------------------
+📘 Example Input
+---------------------------------------------------------
+
+Movies table:
++-------------+--------------+
+| movie_id    |  title       |
++-------------+--------------+
+| 1           | Avengers     |
+| 2           | Frozen 2     |
+| 3           | Joker        |
++-------------+--------------+
+
+Users table:
++-------------+--------------+
+| user_id     |  name        |
++-------------+--------------+
+| 1           | Daniel       |
+| 2           | Monica       |
+| 3           | Maria        |
+| 4           | James        |
++-------------+--------------+
+
+MovieRating table:
++-------------+--------------+--------------+-------------+
+| movie_id    | user_id      | rating       | created_at  |
++-------------+--------------+--------------+-------------+
+| 1           | 1            | 3            | 2020-01-12  |
+| 1           | 2            | 4            | 2020-02-11  |
+| 1           | 3            | 2            | 2020-02-12  |
+| 1           | 4            | 1            | 2020-01-01  |
+| 2           | 1            | 5            | 2020-02-17  |
+| 2           | 2            | 2            | 2020-02-01  |
+| 2           | 3            | 2            | 2020-03-01  |
+| 3           | 1            | 3            | 2020-02-22  |
+| 3           | 2            | 4            | 2020-02-25  |
++-------------+--------------+--------------+-------------+
+
+---------------------------------------------------------
+✅ Expected Output
+---------------------------------------------------------
+
++--------------+
+| results      |
++--------------+
+| Daniel       |
+| Frozen 2     |
++--------------+
+
+---------------------------------------------------------
+🧠 Explanation
+
+1️⃣ Most Active User:
+- Daniel rated 3 movies (Avengers, Frozen 2, Joker)
+- Monica also rated 3 movies
+→ Daniel is lexicographically smaller → ✅ Daniel
+
+2️⃣ Highest Avg Rating in Feb 2020:
+- Avengers: (4 + 2) / 2 = 3.0
+- Frozen 2: (5 + 2) / 2 = 3.5
+- Joker: (3 + 4) / 2 = 3.5
+→ Tie between Frozen 2 & Joker → ✅ Frozen 2 (lexicographically smaller)
+
+---------------------------------------------------------
+💻 Final SQL Query
+---------------------------------------------------------
+*/
+
+(
+    SELECT u.name AS results
+    FROM Users u
+    JOIN MovieRating mr ON u.user_id = mr.user_id
+    GROUP BY u.user_id, u.name
+    ORDER BY COUNT(mr.movie_id) DESC, u.name
+    LIMIT 1
+)
+UNION ALL
+(
+    SELECT m.title AS results
+    FROM Movies m
+    JOIN MovieRating mr ON m.movie_id = mr.movie_id
+    WHERE mr.created_at BETWEEN '2020-02-01' AND '2020-02-29'
+    GROUP BY m.movie_id, m.title
+    ORDER BY AVG(mr.rating) DESC, m.title
+    LIMIT 1
+);

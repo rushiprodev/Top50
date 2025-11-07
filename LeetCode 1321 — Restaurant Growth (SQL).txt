@@ -1,0 +1,92 @@
+🧠 Problem
+
+You are the restaurant owner and want to analyze potential expansion by calculating the 7-day moving average of how much customers paid.
+
+🧾 Table: Customer
+Column Name	Type
+customer_id	int
+name	varchar
+visited_on	date
+amount	int
+
+Primary Key: (customer_id, visited_on)
+Each record shows how much a customer spent on a given date.
+
+🎯 Task
+
+Compute the moving average of total customer spending in a 7-day window
+(i.e., current day + 6 days before).
+Round the average_amount to two decimal places and order by visited_on.
+
+📊 Example
+
+Input Table:
+
+customer_id	name	visited_on	amount
+1	Jhon	2019-01-01	100
+2	Daniel	2019-01-02	110
+3	Jade	2019-01-03	120
+4	Khaled	2019-01-04	130
+5	Winston	2019-01-05	110
+6	Elvis	2019-01-06	140
+7	Anna	2019-01-07	150
+8	Maria	2019-01-08	80
+9	Jaze	2019-01-09	110
+1	Jhon	2019-01-10	130
+3	Jade	2019-01-10	150
+
+Output Table:
+
+visited_on	amount	average_amount
+2019-01-07	860	122.86
+2019-01-08	840	120.00
+2019-01-09	840	120.00
+2019-01-10	1000	142.86
+
+
+
+💻 SQL Solution
+WITH daily AS (
+    SELECT 
+        visited_on,
+        SUM(amount) AS amount
+    FROM Customer
+    GROUP BY visited_on
+),
+windowed AS (
+    SELECT 
+        d1.visited_on,
+        SUM(d2.amount) AS amount,
+        ROUND(SUM(d2.amount)/7, 2) AS average_amount
+    FROM daily d1
+    JOIN daily d2
+      ON d2.visited_on BETWEEN DATE_SUB(d1.visited_on, INTERVAL 6 DAY) AND d1.visited_on
+    GROUP BY d1.visited_on
+)
+SELECT 
+    visited_on,
+    amount,
+    average_amount
+FROM windowed
+WHERE visited_on >= (
+    SELECT MIN(visited_on) + INTERVAL 6 DAY FROM daily
+)
+ORDER BY visited_on;
+
+
+
+
+
+
+
+⚙️ Approach
+
+Aggregate per day: Get total amount per visited_on.
+
+Join for 7-day window: Self-join on previous 6 days and current day.
+
+Calculate average: Divide the rolling sum by 7 and round to 2 decimals.
+
+Filter results: Only include days with a complete 7-day window.
+
+Order results: By visited_on ascending.
